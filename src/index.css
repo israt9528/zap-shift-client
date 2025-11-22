@@ -18,3 +18,9 @@
 body {
    font-family: "Urbanist", sans-serif;
 }
+
+li a.active {
+  background-color: #CAEB66;
+  border-radius: 20px;
+  font-weight: 700;
+}
