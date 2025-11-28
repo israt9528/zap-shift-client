@@ -1,6 +1,9 @@
 import React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useLoaderData } from "react-router";
+import Swal from "sweetalert2";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import useAuth from "../../Hooks/useAuth";
 
 const SendParcel = () => {
   const {
@@ -8,8 +11,12 @@ const SendParcel = () => {
     handleSubmit,
     watch,
     control,
-    formState: { errors },
+    // formState: { errors },
   } = useForm();
+
+  const { user } = useAuth();
+
+  const axiosSecure = useAxiosSecure();
 
   const serviceCenters = useLoaderData();
   const regionsDuplicated = serviceCenters.map((c) => c.region);
@@ -23,10 +30,50 @@ const SendParcel = () => {
     return districts;
   };
 
-  console.log(regions);
-
   const handleSendParcel = (data) => {
     console.log(data);
+    const isDocument = data.parcelType === "document";
+    const isSameDistrict = data.senderDistrict === data.receiverDistrict;
+    const parcelWeight = parseFloat(data.parcelWeight);
+    let cost = 0;
+    if (isDocument) {
+      cost = isSameDistrict ? 60 : 80;
+    } else {
+      if (parcelWeight < 3) {
+        cost = isSameDistrict ? 110 : 150;
+      } else {
+        const minCharge = isSameDistrict ? 110 : 150;
+        const extraWeight = parcelWeight - 3;
+        const extraCharge = isSameDistrict
+          ? extraWeight * 40
+          : extraWeight * 40 + 40;
+        cost = minCharge + extraCharge;
+      }
+    }
+    data.cost = cost;
+    Swal.fire({
+      title: "Are you agree?",
+      text: `The cost will be ${cost}!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, i agree!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosSecure.post("/parcels", data).then((res) => {
+          console.log(res.data);
+        });
+
+        // Swal.fire({
+        //   title: "Booked!",
+        //   text: "Your order has been placed.",
+        //   icon: "success",
+        // });
+      }
+    });
+
+    console.log(cost);
   };
 
   return (
@@ -65,6 +112,7 @@ const SendParcel = () => {
               <label className="label text-black">Parcel Name</label>
               <input
                 type="text"
+                {...register("parcelName")}
                 className="input w-full"
                 placeholder="Parcel Name"
               />
@@ -73,6 +121,7 @@ const SendParcel = () => {
               <label className="label text-black">Parcel Weight (KG)</label>
               <input
                 type="number"
+                {...register("parcelWeight")}
                 className="input w-full"
                 placeholder="Parcel Weight (KG)"
               />
@@ -89,6 +138,7 @@ const SendParcel = () => {
                 type="text"
                 {...register("senderName")}
                 className="input w-full mb-3"
+                defaultValue={user?.displayName}
                 placeholder="Sender Name"
               />
               <label className="label text-black">Address</label>
@@ -98,12 +148,13 @@ const SendParcel = () => {
                 className="input w-full mb-3"
                 placeholder="Address"
               />
-              <label className="label text-black">Sender Phone No</label>
+              <label className="label text-black">Sender Email</label>
               <input
-                type="text"
-                {...register("senderPhoneNo")}
+                type="email"
+                {...register("senderEmail")}
                 className="input w-full mb-3"
-                placeholder="Sender Phone No"
+                defaultValue={user?.email}
+                placeholder="Sender Email"
               />
               <label className="label text-black">Sender Region</label>
               <select
@@ -153,12 +204,12 @@ const SendParcel = () => {
                 className="input w-full mb-3"
                 placeholder="Receiver Address"
               />
-              <label className="label text-black">Receiver Phone No</label>
+              <label className="label text-black">Receiver Email</label>
               <input
-                type="text"
-                {...register("receiverPhoneNo")}
+                type="email"
+                {...register("receiverEmail")}
                 className="input w-full mb-3"
-                placeholder="Receiver Phone No"
+                placeholder="Receiver Email"
               />
               <label className="label text-black">Receiver Region</label>
               <select
