@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { useLoaderData } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import useAuth from "../../Hooks/useAuth";
@@ -13,6 +13,7 @@ const SendParcel = () => {
     control,
     // formState: { errors },
   } = useForm();
+  const navigate = useNavigate();
 
   const { user } = useAuth();
 
@@ -58,18 +59,22 @@ const SendParcel = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, i agree!",
+      confirmButtonText: "Confirm & proceed to pay!",
     }).then((result) => {
       if (result.isConfirmed) {
         axiosSecure.post("/parcels", data).then((res) => {
           console.log(res.data);
+          if (res.data.insertedId) {
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Your parcel request has been saved",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            navigate("/dashboard/my-parcels");
+          }
         });
-
-        // Swal.fire({
-        //   title: "Booked!",
-        //   text: "Your order has been placed.",
-        //   icon: "success",
-        // });
       }
     });
 
