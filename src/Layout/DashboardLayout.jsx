@@ -73,16 +73,26 @@ const DashboardLayout = () => {
               </li>
 
               <li>
-                <NavLink to="/dashboard/my-parcels">
+                <NavLink
+                  to="/dashboard/my-parcels"
+                  className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                  data-tip="My Parcels"
+                >
                   <MdProductionQuantityLimits size={18} />
 
                   <span className="is-drawer-close:hidden">My Parcels</span>
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/dashboard/payment">
+                <NavLink
+                  to="/dashboard/payment-history"
+                  className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                  data-tip="Payment History"
+                >
                   <MdPayment size={18} />
-                  <span className="is-drawer-close:hidden">Payment</span>
+                  <span className="is-drawer-close:hidden">
+                    Payment History
+                  </span>
                 </NavLink>
               </li>
 
