@@ -4,11 +4,13 @@ import useAuth from "../../../Hooks/useAuth";
 import { Link, useLocation, useNavigate } from "react-router";
 import SocialLogin from "../SocialLogin/SocialLogin";
 import axios from "axios";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const Register = () => {
   const { registerUser, updateUser } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
   const {
     register,
     handleSubmit,
@@ -30,10 +32,24 @@ const Register = () => {
 
         axios.post(image_API_URL, formData).then((res) => {
           console.log("image upload", res.data.data.url);
+
+          const userInfo = {
+            email: data.email,
+            displayName: data.name,
+            photoURL: res.data.data.url,
+          };
+
+          axiosSecure.post("/users", userInfo).then((res) => {
+            if (res.data.insertedId) {
+              console.log("user created");
+            }
+          });
+
           const userProfile = {
             displayName: data.name,
             photoURL: res.data.data.url,
           };
+
           updateUser(userProfile)
             .then()
             .catch((error) => {

@@ -78,7 +78,7 @@ const MyParcels = () => {
           </thead>
           <tbody>
             {parcels.map((parcel, index) => (
-              <tr>
+              <tr key={parcel._id}>
                 <th>{index + 1}</th>
                 <td>{parcel.parcelName}</td>
                 <td>{parcel.cost}</td>
