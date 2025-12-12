@@ -72,6 +72,7 @@ const MyParcels = () => {
               <th>Name</th>
               <th>Cost</th>
               <th>Payment Status</th>
+              <th>Tracking ID</th>
               <th>Delivery Status</th>
               <th>Actions</th>
             </tr>
@@ -94,7 +95,12 @@ const MyParcels = () => {
                     </button>
                   )}
                 </td>
-                <td>Cash</td>
+                <td>
+                  <Link to={`/parcel-track/${parcel.trackingId}`}>
+                    {parcel.trackingId}
+                  </Link>
+                </td>
+                <td>{parcel.deliveryStatus}</td>
                 <td>
                   <button className="btn btn-square hover:bg-primary">
                     <IoSearch />

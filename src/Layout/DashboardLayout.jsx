@@ -1,9 +1,20 @@
 import React from "react";
 import { Link, Outlet } from "react-router";
 import { NavLink } from "react-router";
-import { MdPayment, MdProductionQuantityLimits } from "react-icons/md";
+import {
+  MdDirectionsBike,
+  MdPayment,
+  MdProductionQuantityLimits,
+} from "react-icons/md";
+import { FaTasks, FaUser } from "react-icons/fa";
+import { RiEBikeFill } from "react-icons/ri";
+import { SiGoogletasks } from "react-icons/si";
+
+import useRole from "../Hooks/useRole";
 
 const DashboardLayout = () => {
+  const { role } = useRole();
+
   return (
     <div>
       <div className="drawer lg:drawer-open">
@@ -96,6 +107,78 @@ const DashboardLayout = () => {
                 </NavLink>
               </li>
 
+              {/* rider links */}
+              {role === "rider" && (
+                <>
+                  <li>
+                    <NavLink
+                      to="/dashboard/assign-deliveries"
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="Assign Deliveries"
+                    >
+                      <FaTasks size={18} />
+                      <span className="is-drawer-close:hidden">
+                        Assign Deliveries
+                      </span>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/dashboard/completed-deliveries"
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="Completed Deliveries"
+                    >
+                      <SiGoogletasks size={18} />
+
+                      <span className="is-drawer-close:hidden">
+                        Completed Deliveries
+                      </span>
+                    </NavLink>
+                  </li>
+                </>
+              )}
+
+              {/* admin links */}
+              {role === "admin" && (
+                <>
+                  <li>
+                    <NavLink
+                      to="/dashboard/approve-riders"
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="Approve Riders"
+                    >
+                      <MdDirectionsBike size={18} />
+                      <span className="is-drawer-close:hidden">
+                        Approve Riders
+                      </span>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/dashboard/assign-riders"
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="Assign Riders"
+                    >
+                      <RiEBikeFill size={18} />
+                      <span className="is-drawer-close:hidden">
+                        Assign Riders
+                      </span>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/dashboard/users-management"
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="Users Management"
+                    >
+                      <FaUser size={18} />
+                      <span className="is-drawer-close:hidden">
+                        Users Management
+                      </span>
+                    </NavLink>
+                  </li>
+                </>
+              )}
               {/* List item */}
               <li>
                 <button
